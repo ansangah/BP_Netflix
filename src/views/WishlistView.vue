@@ -284,6 +284,7 @@ h1 {
   color: #fff;
   cursor: pointer;
   transition: border 0.2s ease, color 0.2s ease;
+  text-decoration: none;
 }
 
 .ghost-btn.danger {
