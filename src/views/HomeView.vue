@@ -26,43 +26,55 @@
     <section v-if="stats.length" class="stats">
       <article
         v-for="stat in stats"
-        :key="stat.label"
+        :key="stat.title"
         class="stat-card"
+        role="button"
+        tabindex="0"
+        @click="scrollToSection(stat.target)"
+        @keyup.enter="scrollToSection(stat.target)"
       >
-        <p class="value">{{ stat.value }}</p>
-        <p class="label">{{ stat.label }}</p>
+        <p class="value">{{ stat.title }}</p>
+        <p class="label">{{ stat.subtitle }}</p>
       </article>
     </section>
 
     <div ref="collectionsRef" class="collections">
-      <MovieList
-        title="인기 영화"
-        :movies="popular"
-        :loading="loading"
-        :limit="sectionLimit"
-        @see-more="() => goTo('/popular')"
-      />
-      <MovieList
-        title="현재 상영작"
-        :movies="nowPlaying"
-        :loading="loading"
-        :limit="sectionLimit"
-        @see-more="() => goTo('/popular')"
-      />
-      <MovieList
-        title="개봉 예정작"
-        :movies="upcoming"
-        :loading="loading"
-        :limit="sectionLimit"
-        @see-more="() => goTo('/popular')"
-      />
-      <MovieList
-        title="높은 평점"
-        :movies="topRated"
-        :loading="loading"
-        :limit="sectionLimit"
-        @see-more="() => goTo('/popular')"
-      />
+      <section ref="popularSection" class="collection-block">
+        <MovieList
+          title="인기 영화"
+          :movies="popular"
+          :loading="loading"
+          :limit="sectionLimit"
+          @see-more="() => goTo('/popular')"
+        />
+      </section>
+      <section ref="nowPlayingSection" class="collection-block">
+        <MovieList
+          title="현재 상영작"
+          :movies="nowPlaying"
+          :loading="loading"
+          :limit="sectionLimit"
+          @see-more="() => goTo('/popular')"
+        />
+      </section>
+      <section ref="upcomingSection" class="collection-block">
+        <MovieList
+          title="개봉 예정작"
+          :movies="upcoming"
+          :loading="loading"
+          :limit="sectionLimit"
+          @see-more="() => goTo('/popular')"
+        />
+      </section>
+      <section ref="topRatedSection" class="collection-block">
+        <MovieList
+          title="높은 평점"
+          :movies="topRated"
+          :loading="loading"
+          :limit="sectionLimit"
+          @see-more="() => goTo('/popular')"
+        />
+      </section>
     </div>
   </div>
 </template>
@@ -86,6 +98,10 @@ const upcoming = ref<Movie[]>([])
 const topRated = ref<Movie[]>([])
 const loading = ref<boolean>(false)
 const collectionsRef = ref<HTMLElement | null>(null)
+const popularSection = ref<HTMLElement | null>(null)
+const nowPlayingSection = ref<HTMLElement | null>(null)
+const upcomingSection = ref<HTMLElement | null>(null)
+const topRatedSection = ref<HTMLElement | null>(null)
 const viewportWidth = ref(
   typeof window === 'undefined' ? 1440 : window.innerWidth
 )
@@ -121,13 +137,15 @@ const heroWishlistLabel = computed(() => {
   return isWishlisted(movie.id) ? '추천 해제' : '추천 등록'
 })
 
+type SectionKey = 'popular' | 'nowPlaying' | 'upcoming' | 'topRated'
+
 const stats = computed(() => {
   return [
-    { label: '인기 콘텐츠 라인업', value: formatCount(popular.value.length) },
-    { label: '현재 상영중', value: formatCount(nowPlaying.value.length) },
-    { label: '곧 개봉 예정', value: formatCount(upcoming.value.length) },
-    { label: '평점 8.0+ 작품', value: formatCount(topRated.value.length) }
-  ].filter((stat) => !!stat.value)
+    { title: '인기 콘텐츠', subtitle: '라인업 둘러보기', target: 'popular' as SectionKey },
+    { title: '현재 상영작', subtitle: '상영 중인 작품', target: 'nowPlaying' as SectionKey },
+    { title: '곧 개봉 예정', subtitle: '예정작 미리보기', target: 'upcoming' as SectionKey },
+    { title: '평점 8.0+ 작품', subtitle: '떠오르는 추천작', target: 'topRated' as SectionKey }
+  ]
 })
 
 const sectionLimit = computed(() => {
@@ -174,6 +192,17 @@ function scrollToCollections() {
   collectionsRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+function scrollToSection(target?: SectionKey) {
+  const map: Record<SectionKey, typeof popularSection> = {
+    popular: popularSection,
+    nowPlaying: nowPlayingSection,
+    upcoming: upcomingSection,
+    topRated: topRatedSection
+  }
+  if (!target) return
+  map[target].value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 function handleHeroWishlist() {
   if (featuredMovie.value) {
     toggleWishlist(featuredMovie.value)
@@ -182,11 +211,6 @@ function handleHeroWishlist() {
 
 function goTo(path: string) {
   router.push(path)
-}
-
-function formatCount(value: number) {
-  if (!value) return ''
-  return `${value}편`
 }
 
 function formatDate(date: string) {
@@ -298,20 +322,28 @@ function formatDate(date: string) {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
 .stat-card {
-  padding: 18px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 26px;
+  border-radius: 28px;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.7));
   border: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(229, 9, 20, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
 }
 
 .value {
-  font-size: 28px;
+  font-size: 18px;
   margin: 0;
   font-weight: 700;
 }
@@ -340,6 +372,10 @@ function formatDate(date: string) {
 
   .hero-content {
     max-width: 100%;
+  }
+
+  .stats {
+    grid-template-columns: repeat(4, minmax(220px, 260px));
   }
 }
 </style>

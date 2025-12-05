@@ -16,17 +16,19 @@
         이미지 없음
       </div>
     </div>
-    <h3 class="title">{{ movie.title }}</h3>
-    <p class="meta">
-      ⭐ {{ movie.vote_average.toFixed(1) }}
-      · {{ movie.release_date || '개봉일 정보 없음' }}
-    </p>
-    <p class="overview">
-      {{ movie.overview || '줄거리 정보가 없습니다.' }}
-    </p>
-    <button class="wishlist-btn" type="button" @click.stop="handleToggle">
-      {{ isWishlisted(movie.id) ? '추천 해제' : '추천 등록' }}
-    </button>
+    <div class="card-body">
+      <h3 class="title">{{ movie.title }}</h3>
+      <p class="meta">
+        ⭐ {{ movie.vote_average.toFixed(1) }}
+        · {{ movie.release_date || '개봉일 정보 없음' }}
+      </p>
+      <p class="overview">
+        {{ movie.overview || '줄거리 정보가 없습니다.' }}
+      </p>
+      <button class="wishlist-btn" type="button" @click.stop="handleToggle">
+        {{ isWishlisted(movie.id) ? '추천 해제' : '추천 등록' }}
+      </button>
+    </div>
   </article>
 </template>
 
@@ -61,6 +63,12 @@ function handleToggle() {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
+  min-height: 360px;
+  height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .movie-card:hover {
@@ -69,7 +77,7 @@ function handleToggle() {
 }
 
 .movie-card.is-recommended {
-  border: 1px solid rgba(229, 9, 20, 0.6);
+  border-color: rgba(229, 9, 20, 0.65);
   box-shadow: 0 12px 30px rgba(229, 9, 20, 0.25);
 }
 
@@ -97,9 +105,17 @@ function handleToggle() {
   color: #888;
 }
 
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+
 .title {
   font-size: 14px;
-  margin-top: 4px;
+  margin: 4px 0 0;
 }
 
 .meta {
@@ -112,6 +128,7 @@ function handleToggle() {
   color: #aaa;
   max-height: 4.5em;
   overflow: hidden;
+  flex: 1;
 }
 
 .badge {
@@ -126,7 +143,7 @@ function handleToggle() {
 }
 
 .wishlist-btn {
-  margin-top: 8px;
+  margin-top: auto;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   background: transparent;

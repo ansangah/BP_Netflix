@@ -4,12 +4,14 @@
     <main class="app-main">
       <RouterView />
     </main>
+    <ScrollTopButton />
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import AppHeader from './components/layout/AppHeader.vue'
+import ScrollTopButton from './components/common/ScrollTopButton.vue'
 </script>
 
 <style>

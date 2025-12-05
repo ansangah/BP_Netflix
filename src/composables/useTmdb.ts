@@ -75,3 +75,27 @@ export async function fetchMovieGenres(): Promise<Genre[]> {
   const { data } = await tmdb.get<GenreResponse>('/genre/movie/list')
   return data.genres
 }
+
+interface DiscoverOptions {
+  with_genres?: string
+  sort_by?: string
+  'vote_average.gte'?: number
+  'vote_average.lte'?: number
+  with_original_language?: string
+  year?: number
+  page?: number
+}
+
+export async function discoverMovies(options: DiscoverOptions = {}): Promise<TmdbListResponse> {
+  const { data } = await tmdb.get<TmdbListResponse>('/discover/movie', {
+    params: options
+  })
+  return data
+}
+
+export async function searchMovies(query: string, page = 1): Promise<TmdbListResponse> {
+  const { data } = await tmdb.get<TmdbListResponse>('/search/movie', {
+    params: { query, page, include_adult: false }
+  })
+  return data
+}
