@@ -10,9 +10,6 @@
       </div>
       <div class="actions">
         <RouterLink class="ghost-btn" to="/popular">대세 콘텐츠 보기</RouterLink>
-        <button class="ghost-btn" type="button" @click="copyWishlist" :disabled="!wishlist.length">
-          JSON 내보내기
-        </button>
         <button class="ghost-btn danger" type="button" @click="handleClear" :disabled="!wishlist.length">
           전체 비우기
         </button>
@@ -143,7 +140,7 @@ type ViewMode = 'grid' | 'table'
 type SortOption = 'recent' | 'rating' | 'title' | 'release'
 type ToastType = 'success' | 'error'
 
-const { wishlist, stats, removeFromWishlist, clearWishlist, exportWishlist } = useWishlist()
+const { wishlist, stats, removeFromWishlist, clearWishlist } = useWishlist()
 const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
 
 const viewMode = ref<ViewMode>('grid')
@@ -218,16 +215,6 @@ function showToast(type: ToastType, message: string) {
   setTimeout(() => (toast.visible = false), 2500)
 }
 
-async function copyWishlist() {
-  try {
-    await navigator.clipboard?.writeText(exportWishlist())
-    showToast('success', 'JSON 데이터가 클립보드에 복사되었습니다.')
-  } catch (error) {
-    console.error(error)
-    showToast('error', '복사에 실패했습니다. 브라우저 권한을 확인해주세요.')
-  }
-}
-
 function handleClear() {
   if (confirm('위시리스트를 모두 삭제할까요?')) {
     clearWishlist()
@@ -284,6 +271,7 @@ h1 {
   color: #fff;
   cursor: pointer;
   transition: border 0.2s ease, color 0.2s ease;
+  text-decoration: none;
 }
 
 .ghost-btn.danger {
