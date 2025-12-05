@@ -64,6 +64,7 @@ src
 
 ## ⚙️ Deployment
 - `.github/workflows/deploy.yml`에서 GitHub Actions를 설정해 `main` 브랜치 푸시 시 자동으로 `npm run build` 후 GitHub Pages에 업로드합니다.
+- 배포 URL: `https://ansangah.github.io/BP_Netflix/`
 
 ## 📄 License
 MIT
