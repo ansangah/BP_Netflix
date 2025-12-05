@@ -1,6 +1,9 @@
 <template>
   <section class="auth-page">
     <div class="bg-overlay"></div>
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
     <div class="auth-container" :class="{ 'is-signup': isSignUpMode }">
       <div class="form-side">
         <form class="form signin" :class="{ 'is-active': !isSignUpMode }" @submit.prevent="handleLogin">
@@ -9,12 +12,18 @@
 
           <label>
             <span>이메일</span>
-            <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
+            <div class="input-frame">
+              <span class="icon">✉️</span>
+              <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
+            </div>
           </label>
 
           <label>
             <span>비밀번호 (TMDB API Key)</span>
-            <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
+            <div class="input-frame">
+              <span class="icon">🔒</span>
+              <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
+            </div>
           </label>
 
           <div class="form-row">
@@ -38,17 +47,26 @@
 
           <label>
             <span>이메일</span>
-            <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
+            <div class="input-frame">
+              <span class="icon">✉️</span>
+              <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
+            </div>
           </label>
 
           <label>
             <span>비밀번호 (TMDB API Key)</span>
-            <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
+            <div class="input-frame">
+              <span class="icon">🔒</span>
+              <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
+            </div>
           </label>
 
           <label>
             <span>비밀번호 확인</span>
-            <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
+            <div class="input-frame">
+              <span class="icon">🔁</span>
+              <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
+            </div>
           </label>
 
           <label class="checkbox terms">
@@ -192,16 +210,59 @@ async function handleRegister() {
   position: relative;
   overflow: hidden;
   color: #fff;
-  background: #000;
+  background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
 }
 
 .bg-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top, rgba(229, 9, 20, 0.35), transparent),
-    radial-gradient(circle at bottom, rgba(255, 255, 255, 0.1), transparent);
-  filter: blur(120px);
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.35), transparent),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 50%);
+  filter: blur(160px);
   z-index: 0;
+}
+
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(80px);
+  animation: float 12s infinite ease-in-out alternate;
+}
+
+.aurora-1 {
+  width: 300px;
+  height: 300px;
+  background: #f06292;
+  top: -40px;
+  left: -60px;
+}
+
+.aurora-2 {
+  width: 260px;
+  height: 260px;
+  background: #512da8;
+  bottom: 80px;
+  right: -60px;
+  animation-delay: 2s;
+}
+
+.aurora-3 {
+  width: 220px;
+  height: 220px;
+  background: #00bcd4;
+  bottom: -60px;
+  left: 30%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-40px) scale(1.1);
+  }
 }
 
 .auth-container {
@@ -234,17 +295,17 @@ async function handleRegister() {
   padding: 48px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transform: translateY(20px) scale(0.97);
+  transition: opacity 0.45s ease, transform 0.45s ease;
   pointer-events: none;
   overflow-y: auto;
 }
 
 .form.is-active {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0) scale(1);
   pointer-events: auto;
 }
 
@@ -254,7 +315,7 @@ async function handleRegister() {
 }
 
 .subtitle {
-  color: #bbb;
+  color: #d5d5d5;
   font-size: 14px;
   margin-bottom: 12px;
 }
@@ -266,20 +327,44 @@ label {
   font-size: 14px;
 }
 
-input[type='email'],
-input[type='password'] {
+.input-frame {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 14px 16px;
-  color: #fff;
-  transition: border 0.2s ease, background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: border 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-input:focus {
+.icon {
+  font-size: 16px;
+  opacity: 0.7;
+  transition: opacity 0.25s ease;
+}
+
+.input-frame input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+}
+
+.input-frame input:focus {
   outline: none;
-  border-color: #e50914;
-  background: rgba(229, 9, 20, 0.08);
+}
+
+.input-frame:focus-within {
+  border-color: rgba(229, 9, 20, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(229, 9, 20, 0.15);
+}
+
+.input-frame:focus-within .icon {
+  opacity: 1;
 }
 
 .form-row {
@@ -307,20 +392,36 @@ input:focus {
 }
 
 .primary-btn {
-  background: linear-gradient(120deg, #e50914, #f6121d);
+  background: linear-gradient(120deg, #ec4899, #e50914, #8b5cf6);
   border: none;
   color: #fff;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 12px 30px rgba(226, 41, 72, 0.3);
+}
+
+.primary-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(229, 9, 20, 0.3);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 18px 32px rgba(226, 41, 72, 0.35);
+}
+
+.primary-btn:hover::after {
+  opacity: 1;
 }
 
 .ghost-btn {
@@ -348,7 +449,8 @@ input:focus {
 
 .switcher {
   position: relative;
-  background: linear-gradient(180deg, rgba(229, 9, 20, 0.9), rgba(22, 22, 22, 0.8));
+  background: linear-gradient(160deg, rgba(229, 9, 20, 0.85), rgba(53, 0, 107, 0.9));
+  background-size: 200% 200%;
   padding: 48px 32px;
   display: flex;
   flex-direction: column;
@@ -356,6 +458,16 @@ input:focus {
   gap: 48px;
   text-align: center;
   color: #fff;
+  animation: gradientShift 10s linear infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .panel {
