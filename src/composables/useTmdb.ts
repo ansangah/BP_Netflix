@@ -13,8 +13,15 @@ export interface Movie {
   title: string
   overview: string
   poster_path: string | null
+  backdrop_path: string | null
   vote_average: number
   release_date: string
+  genre_ids?: number[]
+}
+
+export interface Genre {
+  id: number
+  name: string
 }
 
 interface TmdbListResponse {
@@ -58,4 +65,13 @@ export async function fetchUpcomingMovies(page = 1): Promise<TmdbListResponse> {
     params: { page }
   })
   return data
+}
+
+interface GenreResponse {
+  genres: Genre[]
+}
+
+export async function fetchMovieGenres(): Promise<Genre[]> {
+  const { data } = await tmdb.get<GenreResponse>('/genre/movie/list')
+  return data.genres
 }

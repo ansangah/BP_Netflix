@@ -1,6 +1,11 @@
 <!-- src/components/movies/MovieCard.vue -->
 <template>
-  <article class="movie-card">
+  <article
+    class="movie-card"
+    :class="{ 'is-recommended': isWishlisted(movie.id) }"
+    @click="handleToggle"
+  >
+    <span v-if="isWishlisted(movie.id)" class="badge">추천됨</span>
     <div class="poster-wrapper">
       <img
         v-if="posterUrl"
@@ -19,12 +24,16 @@
     <p class="overview">
       {{ movie.overview || '줄거리 정보가 없습니다.' }}
     </p>
+    <button class="wishlist-btn" type="button" @click.stop="handleToggle">
+      {{ isWishlisted(movie.id) ? '추천 해제' : '추천 등록' }}
+    </button>
   </article>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Movie } from '../../composables/useTmdb'
+import { useWishlist } from '../../composables/useWishlist'
 
 const props = defineProps<{
   movie: Movie
@@ -35,6 +44,12 @@ const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
 const posterUrl = computed(() =>
   props.movie.poster_path ? `${imageBaseUrl}${props.movie.poster_path}` : ''
 )
+
+const { toggleWishlist, isWishlisted } = useWishlist()
+
+function handleToggle() {
+  toggleWishlist(props.movie)
+}
 </script>
 
 <style scoped>
@@ -45,11 +60,17 @@ const posterUrl = computed(() =>
   gap: 4px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 
 .movie-card:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.movie-card.is-recommended {
+  border: 1px solid rgba(229, 9, 20, 0.6);
+  box-shadow: 0 12px 30px rgba(229, 9, 20, 0.25);
 }
 
 .poster-wrapper {
@@ -91,5 +112,33 @@ const posterUrl = computed(() =>
   color: #aaa;
   max-height: 4.5em;
   overflow: hidden;
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(229, 9, 20, 0.85);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.wishlist-btn {
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  padding: 4px 0;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, border 0.2s ease;
+}
+
+.wishlist-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
 }
 </style>

@@ -19,6 +19,6 @@ import AppHeader from './components/layout/AppHeader.vue'
   color: #fff;
 }
 .app-main {
-  padding-top: 60px;
+  padding-top: 90px;
 }
 </style>
