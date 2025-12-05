@@ -4,92 +4,91 @@
     <div class="aurora aurora-1"></div>
     <div class="aurora aurora-2"></div>
     <div class="aurora aurora-3"></div>
-    <div class="auth-container" :class="{ 'is-signup': isSignUpMode }">
-      <div class="form-side">
-        <form class="form signin" :class="{ 'is-active': !isSignUpMode }" @submit.prevent="handleLogin">
-          <h2>다시 만나서 반가워요!</h2>
-          <p class="subtitle">저장해둔 선호작을 이어서 감상해 보세요.</p>
 
-          <label>
-            <span>이메일</span>
-            <div class="input-frame">
-              <span class="icon">✉️</span>
-              <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
-            </div>
-          </label>
+    <div class="planet"></div>
+    <div class="particles"></div>
 
-          <label>
-            <span>비밀번호 (TMDB API Key)</span>
-            <div class="input-frame">
-              <span class="icon">🔒</span>
-              <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
-            </div>
-          </label>
-
-          <div class="form-row">
-            <label class="checkbox">
-              <input v-model="form.remember" type="checkbox" />
-              <span>Remember me</span>
-            </label>
-            <button type="button" class="link-btn" @click="mode = 'signup'">
-              아직 계정이 없나요?
-            </button>
-          </div>
-
-          <button class="primary-btn" type="submit">
-            로그인
-          </button>
-        </form>
-
-        <form class="form signup" :class="{ 'is-active': isSignUpMode }" @submit.prevent="handleRegister">
-          <h2>간편하게 가입하고 찜 목록을 저장하세요</h2>
-          <p class="subtitle">TMDB Key를 비밀번호로 입력해야 로그인/추천 기능을 사용할 수 있습니다.</p>
-
-          <label>
-            <span>이메일</span>
-            <div class="input-frame">
-              <span class="icon">✉️</span>
-              <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
-            </div>
-          </label>
-
-          <label>
-            <span>비밀번호 (TMDB API Key)</span>
-            <div class="input-frame">
-              <span class="icon">🔒</span>
-              <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
-            </div>
-          </label>
-
-          <label>
-            <span>비밀번호 확인</span>
-            <div class="input-frame">
-              <span class="icon">🔁</span>
-              <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
-            </div>
-          </label>
-
-          <label class="checkbox terms">
-            <input v-model="form.agree" type="checkbox" />
-            <span>서비스 이용 약관 및 개인정보 처리 방침에 동의합니다.</span>
-          </label>
-
-          <button class="primary-btn" type="submit">
-            회원가입
-          </button>
-        </form>
+    <div class="flip-wrapper" :class="{ 'show-signup': isSignUpMode }">
+      <div class="mode-tabs">
+        <button type="button" :class="{ active: !isSignUpMode }" @click="mode = 'signin'">로그인</button>
+        <button type="button" :class="{ active: isSignUpMode }" @click="mode = 'signup'">회원가입</button>
       </div>
+      <div class="flip-card">
+        <div class="card-face card-front">
+          <form class="form" @submit.prevent="handleLogin">
+            <h2>다시 만나서 반가워요!</h2>
+            <p class="subtitle">저장해둔 선호작을 이어서 감상해 보세요.</p>
 
-      <div class="switcher">
-        <div class="panel panel-signin">
-          <h3>가입한 계정이 있으신가요?</h3>
-          <p>로그인 화면으로 전환하고, 저장된 찜 목록을 불러오세요.</p>
-          <button class="ghost-btn" @click="mode = 'signin'">로그인으로 이동</button>
+            <label>
+              <span>이메일</span>
+              <div class="input-frame">
+                <span class="icon">✉️</span>
+                <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 (TMDB API Key)</span>
+              <div class="input-frame">
+                <span class="icon">🔒</span>
+                <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
+              </div>
+            </label>
+
+            <div class="form-row">
+              <label class="checkbox">
+                <input v-model="form.remember" type="checkbox" />
+                <span>Remember me</span>
+              </label>
+              <button type="button" class="link-btn" @click="mode = 'signup'">
+                계정이 없나요?
+              </button>
+            </div>
+
+            <button class="primary-btn" type="submit">
+              로그인
+            </button>
+          </form>
         </div>
-        <div class="panel panel-signup">
-          <h3>새로운 계정을 만들고 싶나요?</h3>
-          <p>TMDB API Key를 발급받아 비밀번호로 등록하세요.</p>
-          <button class="ghost-btn" @click="mode = 'signup'">회원가입으로 이동</button>
+
+        <div class="card-face card-back">
+          <form class="form" @submit.prevent="handleRegister">
+            <h2>첫 방문을 환영해요</h2>
+            <p class="subtitle">TMDB Key를 비밀번호로 등록하면 추천 기능을 바로 쓸 수 있어요.</p>
+
+            <label>
+              <span>이메일</span>
+              <div class="input-frame">
+                <span class="icon">✉️</span>
+                <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 (TMDB API Key)</span>
+              <div class="input-frame">
+                <span class="icon">🔒</span>
+                <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 확인</span>
+              <div class="input-frame">
+                <span class="icon">🔁</span>
+                <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
+              </div>
+            </label>
+
+            <label class="checkbox terms">
+              <input v-model="form.agree" type="checkbox" />
+              <span>서비스 이용 약관 및 개인정보 처리 방침에 동의합니다.</span>
+            </label>
+
+            <button class="primary-btn" type="submit">
+              회원가입
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -265,48 +264,78 @@ async function handleRegister() {
   }
 }
 
-.auth-container {
-  width: min(960px, 100%);
-  background: rgba(14, 14, 14, 0.85);
-  border-radius: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.flip-wrapper {
+  width: min(420px, 100%);
+  perspective: 1600px;
   position: relative;
   z-index: 1;
-  overflow: hidden;
-  transition: transform 0.4s ease;
 }
 
-.auth-container.is-signup {
-  transform: translateY(-6px);
+.mode-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
 }
 
-.form-side {
+.mode-tabs button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #d0d0d0;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.mode-tabs button.active {
+  background: linear-gradient(120deg, #f43f5e, #b91c1c);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+}
+
+.flip-card {
+  width: 100%;
+  min-height: 520px;
   position: relative;
-  min-height: 600px;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+}
+
+.flip-wrapper.show-signup .flip-card {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.85);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
 }
 
 .form {
-  position: absolute;
-  inset: 0;
-  padding: 48px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  opacity: 0;
-  transform: translateY(20px) scale(0.97);
-  transition: opacity 0.45s ease, transform 0.45s ease;
-  pointer-events: none;
-  overflow-y: auto;
-}
-
-.form.is-active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
 }
 
 .form h2 {
@@ -445,45 +474,6 @@ label {
   color: #bbb;
   font-size: 13px;
   cursor: pointer;
-}
-
-.switcher {
-  position: relative;
-  background: linear-gradient(160deg, rgba(229, 9, 20, 0.85), rgba(53, 0, 107, 0.9));
-  background-size: 200% 200%;
-  padding: 48px 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 48px;
-  text-align: center;
-  color: #fff;
-  animation: gradientShift 10s linear infinite alternate;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
-  }
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.panel h3 {
-  font-size: 22px;
-  margin: 0;
-}
-
-.panel p {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
 }
 
 .toast {
