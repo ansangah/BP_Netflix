@@ -1,4 +1,4 @@
-# 🎬 Netflix Clone (Vue 3 + TypeScript)
+# 🎬 Netflix Clone (Vite + Vue 3 + TypeScript)
 
 TMDB API를 기반으로 인기 영화, 검색, 위시리스트 등을 제공하는 Netflix 스타일 SPA입니다. Vue 3의 Composition API와 Vite를 사용해 구현했으며, GitHub Pages 자동 배포까지 구성했습니다.
 
