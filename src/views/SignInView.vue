@@ -326,6 +326,8 @@ async function handleRegister() {
   justify-content: center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  min-height: 540px;
+  overflow: hidden;
 }
 
 .card-back {
@@ -336,6 +338,28 @@ async function handleRegister() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 640px) {
+  .flip-wrapper {
+    width: 100%;
+  }
+
+  .mode-tabs button {
+    font-size: 13px;
+  }
+
+  .card-face {
+    padding: 28px;
+    border-radius: 24px;
+    min-height: 500px;
+  }
+
+  .form {
+    gap: 16px;
+  }
 }
 
 .form h2 {
