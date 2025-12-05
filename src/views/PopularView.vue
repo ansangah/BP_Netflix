@@ -91,7 +91,6 @@
           <p v-else-if="!hasMore" class="end-message">모든 콘텐츠를 확인했습니다.</p>
         </div>
         <div ref="sentinelRef" class="sentinel"></div>
-        <button v-show="showTopButton" class="top-btn" type="button" @click="scrollToTop">Top</button>
       </div>
     </template>
   </section>
@@ -134,8 +133,6 @@ const infiniteTotalPages = ref(1)
 const isLoadingMore = ref(false)
 const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
-
-const showTopButton = ref(false)
 
 const hasMore = computed(() => infinitePage.value <= infiniteTotalPages.value)
 
@@ -242,24 +239,14 @@ function formatDate(date: string) {
   }).format(new Date(date))
 }
 
-function handleScroll() {
-  showTopButton.value = window.scrollY > 400 && viewMode.value === 'infinite'
-}
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
 watch(
   () => viewMode.value,
   async (mode) => {
     if (mode === 'infinite') {
       await nextTick()
       createObserver()
-      handleScroll()
     } else {
       destroyObserver()
-      showTopButton.value = false
     }
   }
 )
@@ -282,15 +269,12 @@ watch(
 
 onMounted(async () => {
   await bootstrap()
-  handleScroll()
-  window.addEventListener('scroll', handleScroll, { passive: true })
   if (viewMode.value === 'infinite') {
     createObserver()
   }
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll)
   destroyObserver()
 })
 </script>
@@ -447,19 +431,6 @@ td .overview {
 
 .sentinel {
   height: 1px;
-}
-
-.top-btn {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  border: none;
-  background: rgba(229, 9, 20, 0.85);
-  color: #fff;
-  border-radius: 999px;
-  padding: 12px 24px;
-  cursor: pointer;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 768px) {

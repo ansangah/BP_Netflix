@@ -99,8 +99,9 @@ const helperLabel = computed(() => {
 
 .movies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  justify-items: center;
 }
 
 .loading {
@@ -110,7 +111,7 @@ const helperLabel = computed(() => {
 
 @media (max-width: 640px) {
   .movies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
 }
 </style>
