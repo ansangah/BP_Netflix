@@ -1,77 +1,94 @@
 <template>
   <section class="auth-page">
     <div class="bg-overlay"></div>
-    <div class="auth-container" :class="{ 'is-signup': isSignUpMode }">
-      <div class="form-side">
-        <form class="form signin" :class="{ 'is-active': !isSignUpMode }" @submit.prevent="handleLogin">
-          <h2>다시 만나서 반가워요!</h2>
-          <p class="subtitle">저장해둔 선호작을 이어서 감상해 보세요.</p>
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
 
-          <label>
-            <span>이메일</span>
-            <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
-          </label>
+    <div class="planet"></div>
+    <div class="particles"></div>
 
-          <label>
-            <span>비밀번호 (TMDB API Key)</span>
-            <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
-          </label>
-
-          <div class="form-row">
-            <label class="checkbox">
-              <input v-model="form.remember" type="checkbox" />
-              <span>Remember me</span>
-            </label>
-            <button type="button" class="link-btn" @click="mode = 'signup'">
-              아직 계정이 없나요?
-            </button>
-          </div>
-
-          <button class="primary-btn" type="submit">
-            로그인
-          </button>
-        </form>
-
-        <form class="form signup" :class="{ 'is-active': isSignUpMode }" @submit.prevent="handleRegister">
-          <h2>간편하게 가입하고 찜 목록을 저장하세요</h2>
-          <p class="subtitle">TMDB Key를 비밀번호로 입력해야 로그인/추천 기능을 사용할 수 있습니다.</p>
-
-          <label>
-            <span>이메일</span>
-            <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
-          </label>
-
-          <label>
-            <span>비밀번호 (TMDB API Key)</span>
-            <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
-          </label>
-
-          <label>
-            <span>비밀번호 확인</span>
-            <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
-          </label>
-
-          <label class="checkbox terms">
-            <input v-model="form.agree" type="checkbox" />
-            <span>서비스 이용 약관 및 개인정보 처리 방침에 동의합니다.</span>
-          </label>
-
-          <button class="primary-btn" type="submit">
-            회원가입
-          </button>
-        </form>
+    <div class="flip-wrapper" :class="{ 'show-signup': isSignUpMode }">
+      <div class="mode-tabs">
+        <button type="button" :class="{ active: !isSignUpMode }" @click="mode = 'signin'">로그인</button>
+        <button type="button" :class="{ active: isSignUpMode }" @click="mode = 'signup'">회원가입</button>
       </div>
+      <div class="flip-card">
+        <div class="card-face card-front">
+          <form class="form" @submit.prevent="handleLogin">
+            <h2>다시 만나서 반가워요!</h2>
+            <p class="subtitle">저장해둔 선호작을 이어서 감상해 보세요.</p>
 
-      <div class="switcher">
-        <div class="panel panel-signin">
-          <h3>가입한 계정이 있으신가요?</h3>
-          <p>로그인 화면으로 전환하고, 저장된 찜 목록을 불러오세요.</p>
-          <button class="ghost-btn" @click="mode = 'signin'">로그인으로 이동</button>
+            <label>
+              <span>이메일</span>
+              <div class="input-frame">
+                <span class="icon">✉️</span>
+                <input v-model="form.signinEmail" type="email" placeholder="you@example.com" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 (TMDB API Key)</span>
+              <div class="input-frame">
+                <span class="icon">🔒</span>
+                <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
+              </div>
+            </label>
+
+            <div class="form-row">
+              <label class="checkbox">
+                <input v-model="form.remember" type="checkbox" />
+                <span>Remember me</span>
+              </label>
+              <button type="button" class="link-btn" @click="mode = 'signup'">
+                계정이 없나요?
+              </button>
+            </div>
+
+            <button class="primary-btn" type="submit">
+              로그인
+            </button>
+          </form>
         </div>
-        <div class="panel panel-signup">
-          <h3>새로운 계정을 만들고 싶나요?</h3>
-          <p>TMDB API Key를 발급받아 비밀번호로 등록하세요.</p>
-          <button class="ghost-btn" @click="mode = 'signup'">회원가입으로 이동</button>
+
+        <div class="card-face card-back">
+          <form class="form" @submit.prevent="handleRegister">
+            <h2>첫 방문을 환영해요</h2>
+            <p class="subtitle">TMDB Key를 비밀번호로 등록하면 추천 기능을 바로 쓸 수 있어요.</p>
+
+            <label>
+              <span>이메일</span>
+              <div class="input-frame">
+                <span class="icon">✉️</span>
+                <input v-model="form.signupEmail" type="email" placeholder="new@example.com" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 (TMDB API Key)</span>
+              <div class="input-frame">
+                <span class="icon">🔒</span>
+                <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
+              </div>
+            </label>
+
+            <label>
+              <span>비밀번호 확인</span>
+              <div class="input-frame">
+                <span class="icon">🔁</span>
+                <input v-model="form.signupPasswordConfirm" type="password" placeholder="다시 입력" />
+              </div>
+            </label>
+
+            <label class="checkbox terms">
+              <input v-model="form.agree" type="checkbox" />
+              <span>서비스 이용 약관 및 개인정보 처리 방침에 동의합니다.</span>
+            </label>
+
+            <button class="primary-btn" type="submit">
+              회원가입
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -88,6 +105,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth, validateEmail } from '../composables/useAuth'
+import { AUTH_REDIRECT_KEY } from '../constants/navigation'
 
 type ToastType = 'success' | 'error'
 
@@ -147,7 +165,10 @@ async function handleLogin() {
   }
 
   showToast('success', '로그인 성공! 잠시 후 메인으로 이동합니다.')
-  const redirect = (route.query.redirect as string) || '/'
+  const queryRedirect = (route.query.redirect as string) || ''
+  const storedRedirect = sessionStorage.getItem(AUTH_REDIRECT_KEY) || ''
+  const redirect = queryRedirect || storedRedirect || '/'
+  sessionStorage.removeItem(AUTH_REDIRECT_KEY)
   setTimeout(() => {
     router.push(redirect)
   }, 600)
@@ -184,68 +205,229 @@ async function handleRegister() {
 
 <style scoped>
 .auth-page {
-  min-height: 100vh;
+  min-height: 100%;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 24px;
+  padding: clamp(24px, 4vw, 64px) clamp(16px, 4vw, 48px);
+  gap: clamp(16px, 2vw, 32px);
   position: relative;
   overflow: hidden;
   color: #fff;
-  background: #000;
+  background: transparent;
 }
 
 .bg-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top, rgba(229, 9, 20, 0.35), transparent),
-    radial-gradient(circle at bottom, rgba(255, 255, 255, 0.1), transparent);
-  filter: blur(120px);
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.35), transparent),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 50%);
+  filter: blur(160px);
   z-index: 0;
 }
 
-.auth-container {
-  width: min(960px, 100%);
-  background: rgba(14, 14, 14, 0.85);
-  border-radius: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(80px);
+  animation: float 12s infinite ease-in-out alternate;
+}
+
+.aurora-1 {
+  width: 300px;
+  height: 300px;
+  background: #f06292;
+  top: -40px;
+  left: -60px;
+}
+
+.aurora-2 {
+  width: 260px;
+  height: 260px;
+  background: #512da8;
+  bottom: 80px;
+  right: -60px;
+  animation-delay: 2s;
+}
+
+.aurora-3 {
+  width: 220px;
+  height: 220px;
+  background: #00bcd4;
+  bottom: -60px;
+  left: 30%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-40px) scale(1.1);
+  }
+}
+
+.flip-wrapper {
+  width: min(520px, 95vw);
+  max-width: 560px;
+  perspective: 1600px;
   position: relative;
   z-index: 1;
-  overflow: hidden;
-  transition: transform 0.4s ease;
+  margin: clamp(18px, 3vw, 48px) auto;
+  align-self: center;
+  margin-top: clamp(-30px, -5vw, -18px);
 }
 
-.auth-container.is-signup {
-  transform: translateY(-6px);
+.mode-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: clamp(16px, 2vw, 28px);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
 }
 
-.form-side {
+.mode-tabs button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #d0d0d0;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.mode-tabs button.active {
+  background: linear-gradient(120deg, #f43f5e, #b91c1c);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+}
+
+.flip-card {
+  width: 100%;
+  min-height: 640px;
   position: relative;
-  min-height: 600px;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.flip-wrapper.show-signup .flip-card {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.85);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  padding-block: clamp(32px, 3vw, 48px);
+  padding-inline: clamp(34px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  height: 100%;
+  max-height: inherit;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.card-back {
+  transform: rotateY(180deg);
 }
 
 .form {
-  position: absolute;
-  inset: 0;
-  padding: 48px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-  pointer-events: none;
-  overflow-y: auto;
 }
 
-.form.is-active {
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
+@media (max-width: 640px) {
+  .flip-wrapper {
+    width: 100%;
+    height: auto;
+    max-height: none;
+  }
+
+  .mode-tabs button {
+    font-size: 13px;
+  }
+
+  .card-face {
+    padding: 28px;
+    border-radius: 24px;
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 960px) {
+  .auth-page {
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .flip-wrapper {
+    max-width: 520px;
+    min-height: 680px;
+  }
+
+  .card-face {
+    padding-block: clamp(28px, 4vw, 40px);
+    padding-inline: clamp(30px, 6vw, 40px);
+    min-height: 600px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .form-row .link-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 24px 16px;
+  }
+
+  .flip-wrapper {
+    min-height: 600px;
+  }
+
+  .card-face {
+    min-height: 560px;
+  }
+
+  .primary-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .input-frame {
+    padding: 10px 12px;
+  }
 }
 
 .form h2 {
@@ -254,7 +436,7 @@ async function handleRegister() {
 }
 
 .subtitle {
-  color: #bbb;
+  color: #d5d5d5;
   font-size: 14px;
   margin-bottom: 12px;
 }
@@ -266,20 +448,44 @@ label {
   font-size: 14px;
 }
 
-input[type='email'],
-input[type='password'] {
+.input-frame {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 14px 16px;
-  color: #fff;
-  transition: border 0.2s ease, background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: border 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-input:focus {
+.icon {
+  font-size: 16px;
+  opacity: 0.7;
+  transition: opacity 0.25s ease;
+}
+
+.input-frame input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+}
+
+.input-frame input:focus {
   outline: none;
-  border-color: #e50914;
-  background: rgba(229, 9, 20, 0.08);
+}
+
+.input-frame:focus-within {
+  border-color: rgba(229, 9, 20, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(229, 9, 20, 0.15);
+}
+
+.input-frame:focus-within .icon {
+  opacity: 1;
 }
 
 .form-row {
@@ -307,20 +513,37 @@ input:focus {
 }
 
 .primary-btn {
-  background: linear-gradient(120deg, #e50914, #f6121d);
+  background: linear-gradient(120deg, #ec4899, #e50914, #8b5cf6);
   border: none;
   color: #fff;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 12px 30px rgba(226, 41, 72, 0.3);
+  margin-top: clamp(12px, 2vw, 22px);
+}
+
+.primary-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(229, 9, 20, 0.3);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 18px 32px rgba(226, 41, 72, 0.35);
+}
+
+.primary-btn:hover::after {
+  opacity: 1;
 }
 
 .ghost-btn {
@@ -344,34 +567,6 @@ input:focus {
   color: #bbb;
   font-size: 13px;
   cursor: pointer;
-}
-
-.switcher {
-  position: relative;
-  background: linear-gradient(180deg, rgba(229, 9, 20, 0.9), rgba(22, 22, 22, 0.8));
-  padding: 48px 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 48px;
-  text-align: center;
-  color: #fff;
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.panel h3 {
-  font-size: 22px;
-  margin: 0;
-}
-
-.panel p {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
 }
 
 .toast {
