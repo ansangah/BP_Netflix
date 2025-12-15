@@ -31,5 +31,7 @@ import ScrollTopButton from './components/common/ScrollTopButton.vue'
   align-items: flex-start;
   padding: 70px 0 24px;
   box-sizing: border-box;
+  min-height: 0;
+  overflow: hidden;
 }
 </style>
