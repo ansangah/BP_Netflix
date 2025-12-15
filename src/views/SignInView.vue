@@ -277,6 +277,7 @@ async function handleRegister() {
   z-index: 1;
   margin: clamp(18px, 3vw, 48px) auto;
   align-self: center;
+  margin-top: clamp(-30px, -5vw, -18px);
 }
 
 .mode-tabs {
