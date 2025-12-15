@@ -205,9 +205,9 @@ async function handleRegister() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 24px;
+  padding: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 48px);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   color: #fff;
   background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
 }
@@ -265,7 +265,9 @@ async function handleRegister() {
 }
 
 .flip-wrapper {
-  width: min(420px, 100%);
+  width: min(520px, 90vw);
+  max-width: 560px;
+  min-height: min(760px, 90vh);
   perspective: 1600px;
   position: relative;
   z-index: 1;
@@ -302,7 +304,7 @@ async function handleRegister() {
 
 .flip-card {
   width: 100%;
-  min-height: 520px;
+  min-height: 640px;
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.8s ease;
@@ -320,13 +322,13 @@ async function handleRegister() {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(20px);
-  padding: 40px;
+  padding: clamp(32px, 3vw, 48px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  min-height: 500px;
+  min-height: 620px;
   overflow: hidden;
 }
 
