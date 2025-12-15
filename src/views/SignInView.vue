@@ -271,12 +271,13 @@ async function handleRegister() {
   perspective: 1600px;
   position: relative;
   z-index: 1;
+  margin-block: clamp(18px, 3vw, 48px);
 }
 
 .mode-tabs {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: clamp(16px, 2vw, 28px);
   background: rgba(0, 0, 0, 0.35);
   border-radius: 999px;
   padding: 4px;
@@ -322,10 +323,12 @@ async function handleRegister() {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(20px);
-  padding: clamp(32px, 3vw, 48px);
+  padding-block: clamp(32px, 3vw, 48px);
+  padding-inline: clamp(34px, 4vw, 48px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 20px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   min-height: 620px;
@@ -339,7 +342,7 @@ async function handleRegister() {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 @media (max-width: 640px) {
@@ -453,6 +456,7 @@ label {
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 12px 30px rgba(226, 41, 72, 0.3);
+  margin-top: clamp(12px, 2vw, 22px);
 }
 
 .primary-btn::after {
