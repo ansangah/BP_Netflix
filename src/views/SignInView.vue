@@ -105,6 +105,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth, validateEmail } from '../composables/useAuth'
+import { AUTH_REDIRECT_KEY } from '../constants/navigation'
 
 type ToastType = 'success' | 'error'
 
@@ -164,7 +165,10 @@ async function handleLogin() {
   }
 
   showToast('success', '로그인 성공! 잠시 후 메인으로 이동합니다.')
-  const redirect = (route.query.redirect as string) || '/'
+  const queryRedirect = (route.query.redirect as string) || ''
+  const storedRedirect = sessionStorage.getItem(AUTH_REDIRECT_KEY) || ''
+  const redirect = queryRedirect || storedRedirect || '/'
+  sessionStorage.removeItem(AUTH_REDIRECT_KEY)
   setTimeout(() => {
     router.push(redirect)
   }, 600)
@@ -313,6 +317,8 @@ async function handleRegister() {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.8s ease;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .flip-wrapper.show-signup .flip-card {
@@ -338,6 +344,7 @@ async function handleRegister() {
   height: 100%;
   max-height: inherit;
   overflow: hidden;
+  will-change: transform;
 }
 
 .card-back {

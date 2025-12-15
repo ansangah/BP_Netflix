@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { isAuthenticated } from '../composables/useAuth'
+import { AUTH_REDIRECT_KEY } from '../constants/navigation'
 
 // Views
 import HomeView from '../views/HomeView.vue'
@@ -30,10 +31,8 @@ router.beforeEach((to, from, next) => {
   const loggedIn = isAuthenticated()
 
   if (to.meta.requiresAuth && !loggedIn) {
-    return next({
-      name: 'signin',
-      query: { redirect: to.fullPath }
-    })
+    sessionStorage.setItem(AUTH_REDIRECT_KEY, to.fullPath)
+    return next({ name: 'signin' })
   }
 
   if (to.meta.guestOnly && loggedIn) {
