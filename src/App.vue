@@ -22,6 +22,7 @@ import ScrollTopButton from './components/common/ScrollTopButton.vue'
   flex-direction: column;
   background: transparent;
   color: #fff;
+  position: relative;
 }
 body {
   margin: 0;
@@ -33,15 +34,15 @@ body {
   background: transparent;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 70px 0 24px;
+  align-items: center;
+  padding: 90px 0 24px;
   box-sizing: border-box;
-  min-height: 0;
+  min-height: calc(100vh - 72px);
   overflow: hidden;
   position: relative;
 }
 
-.app-main::before {
+#app::before {
   content: '';
   position: absolute;
   inset: 0;
