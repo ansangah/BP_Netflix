@@ -203,13 +203,17 @@ async function handleRegister() {
 .auth-page {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 48px);
+  padding: clamp(32px, 5vw, 72px) clamp(16px, 4vw, 48px);
+  gap: clamp(24px, 3vw, 48px);
   position: relative;
   overflow: visible;
   color: #fff;
   background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
+  width: min(100%, 1200px);
+  margin-inline: auto;
 }
 
 .bg-overlay {
@@ -265,7 +269,7 @@ async function handleRegister() {
 }
 
 .flip-wrapper {
-  width: min(520px, 90vw);
+  width: min(520px, 95vw);
   max-width: 560px;
   min-height: min(760px, 90vh);
   perspective: 1600px;
@@ -358,6 +362,61 @@ async function handleRegister() {
     padding: 28px;
     border-radius: 24px;
     min-height: 520px;
+  }
+}
+
+@media (max-width: 960px) {
+  .auth-page {
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .flip-wrapper {
+    max-width: 520px;
+    min-height: 680px;
+  }
+
+  .card-face {
+    padding-block: clamp(28px, 4vw, 40px);
+    padding-inline: clamp(30px, 6vw, 40px);
+    min-height: 600px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .form-row .link-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 24px 16px;
+  }
+
+  .flip-wrapper {
+    min-height: 600px;
+  }
+
+  .card-face {
+    min-height: 560px;
+  }
+
+  .primary-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .input-frame {
+    padding: 10px 12px;
   }
 }
 
