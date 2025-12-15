@@ -61,8 +61,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0 32px;
-  background: rgba(8, 8, 8, 0.3);
-  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
   transition: background 0.3s ease, transform 0.3s ease;
   z-index: 100;
 }
