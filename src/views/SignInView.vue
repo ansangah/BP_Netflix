@@ -212,7 +212,8 @@ async function handleRegister() {
   overflow: visible;
   color: #fff;
   background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
-  width: min(100%, 1200px);
+  width: 100%;
+  max-width: 1200px;
   margin-inline: auto;
 }
 
@@ -275,7 +276,8 @@ async function handleRegister() {
   perspective: 1600px;
   position: relative;
   z-index: 1;
-  margin-block: clamp(18px, 3vw, 48px);
+  margin: clamp(18px, 3vw, 48px) auto;
+  align-self: center;
 }
 
 .mode-tabs {
