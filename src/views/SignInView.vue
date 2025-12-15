@@ -201,20 +201,20 @@ async function handleRegister() {
 
 <style scoped>
 .auth-page {
-  min-height: 100vh;
+  min-height: 100%;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(32px, 5vw, 72px) clamp(16px, 4vw, 48px);
-  gap: clamp(24px, 3vw, 48px);
+  padding: clamp(24px, 4vw, 64px) clamp(16px, 4vw, 48px);
+  gap: clamp(16px, 2vw, 32px);
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   color: #fff;
   background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
-  width: 100%;
-  max-width: 1200px;
-  margin-inline: auto;
 }
 
 .bg-overlay {
@@ -272,7 +272,6 @@ async function handleRegister() {
 .flip-wrapper {
   width: min(520px, 95vw);
   max-width: 560px;
-  min-height: min(760px, 90vh);
   perspective: 1600px;
   position: relative;
   z-index: 1;
@@ -337,7 +336,8 @@ async function handleRegister() {
   gap: 20px;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  min-height: 620px;
+  height: 100%;
+  max-height: inherit;
   overflow: hidden;
 }
 
@@ -354,6 +354,8 @@ async function handleRegister() {
 @media (max-width: 640px) {
   .flip-wrapper {
     width: 100%;
+    height: auto;
+    max-height: none;
   }
 
   .mode-tabs button {
