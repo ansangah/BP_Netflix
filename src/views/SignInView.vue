@@ -203,8 +203,6 @@ async function handleRegister() {
 .auth-page {
   min-height: 100%;
   width: 100%;
-  max-width: 1200px;
-  margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -214,7 +212,7 @@ async function handleRegister() {
   position: relative;
   overflow: hidden;
   color: #fff;
-  background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
+  background: transparent;
 }
 
 .bg-overlay {

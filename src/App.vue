@@ -20,11 +20,16 @@ import ScrollTopButton from './components/common/ScrollTopButton.vue'
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle at top, #0a0a0a, #050505 50%);
+  background: transparent;
   color: #fff;
 }
+body {
+  margin: 0;
+}
+
 .app-main {
   flex: 1;
+  width: 100%;
   background: transparent;
   display: flex;
   justify-content: center;
@@ -33,5 +38,15 @@ import ScrollTopButton from './components/common/ScrollTopButton.vue'
   box-sizing: border-box;
   min-height: 0;
   overflow: hidden;
+  position: relative;
+}
+
+.app-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 25% 25%, #982236, #44070f 32%, #1a0307 65%, #050104 100%),
+    radial-gradient(circle at 75% 60%, #58206f, #1a0307 35%, #050104 75%);
+  z-index: -1;
 }
 </style>
