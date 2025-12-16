@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import MovieList from '../components/movies/MovieList.vue'
 import {
@@ -91,6 +91,7 @@ import {
   type Movie
 } from '../composables/useTmdb'
 import { useWishlist } from '../composables/useWishlist'
+import { useAuth } from '../composables/useAuth'
 
 const popular = ref<Movie[]>([])
 const nowPlaying = ref<Movie[]>([])
@@ -112,6 +113,7 @@ const updateViewport = () => {
 
 const router = useRouter()
 const { toggleWishlist, isWishlisted } = useWishlist()
+const { tmdbKey } = useAuth()
 const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
 
 const featuredMovie = computed(() => nowPlaying.value[0] ?? popular.value[0] ?? null)
@@ -187,6 +189,14 @@ onBeforeUnmount(() => {
   if (typeof window === 'undefined') return
   window.removeEventListener('resize', updateViewport)
 })
+
+watch(
+  tmdbKey,
+  (key, previous) => {
+    if (!key || key === previous) return
+    bootstrap()
+  }
+)
 
 function scrollToCollections() {
   collectionsRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })

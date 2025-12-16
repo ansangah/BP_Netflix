@@ -145,6 +145,7 @@ import {
   type Genre,
   type Movie
 } from '../composables/useTmdb'
+import { useAuth } from '../composables/useAuth'
 
 type ViewMode = 'table' | 'infinite'
 
@@ -185,6 +186,7 @@ function toggleDetails(movieId: number) {
 }
 
 const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const { tmdbKey } = useAuth()
 
 function getPosterUrl(movie: Movie) {
   if (!imageBaseUrl) return ''
@@ -314,6 +316,14 @@ watch(
   () => hasMore.value,
   (more) => {
     if (!more) destroyObserver()
+  }
+)
+
+watch(
+  tmdbKey,
+  (key, previous) => {
+    if (!key || key === previous) return
+    bootstrap()
   }
 )
 

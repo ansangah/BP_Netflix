@@ -139,6 +139,13 @@ export function useAuth() {
     state,
     currentUser: computed(() => currentUser.value),
     isLoggedIn: computed(() => !!currentUser.value),
+    tmdbKey: computed(() => {
+      return (
+        currentUser.value?.password ??
+        localStorage.getItem(TMDB_KEY_STORAGE) ??
+        ''
+      )
+    }),
     rememberedEmail: computed(() => rememberedEmail.value),
     register,
     login,
