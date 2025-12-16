@@ -325,22 +325,30 @@ function formatDate(date: string) {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-  gap: 16px;
-  overflow: hidden;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
 }
 
-@media (max-width: 960px) {
-  .stats {
-    gap: 12px;
-  }
+.stats::-webkit-scrollbar {
+  height: 6px;
 }
 
-@media (max-width: 640px) {
-  .stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    font-size: 0.85rem;
-  }
+.stats::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.stats::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stats {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .stat-card {
