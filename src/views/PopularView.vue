@@ -43,6 +43,7 @@
           <table>
             <thead>
               <tr>
+                <th class="poster-col">포스터</th>
                 <th>제목</th>
                 <th>개봉일</th>
                 <th>평점</th>
@@ -51,6 +52,18 @@
             </thead>
             <tbody>
               <tr v-for="movie in tableMovies" :key="movie.id">
+                <td class="poster-cell">
+                  <div class="poster-thumb">
+                    <img
+                      v-if="getPosterUrl(movie)"
+                      :src="getPosterUrl(movie)"
+                      :alt="movie.title"
+                    />
+                    <div v-else class="poster-placeholder">
+                      이미지 없음
+                    </div>
+                  </div>
+                </td>
                 <td>
                   <p class="title">{{ movie.title }}</p>
                   <p class="overview">{{ truncate(movie.overview) }}</p>
@@ -135,6 +148,13 @@ const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 const hasMore = computed(() => infinitePage.value <= infiniteTotalPages.value)
+
+const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+
+function getPosterUrl(movie: Movie) {
+  if (!imageBaseUrl) return ''
+  return movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : ''
+}
 
 async function bootstrap() {
   try {
@@ -375,6 +395,40 @@ th {
   color: #ccc;
   font-size: 13px;
   letter-spacing: 0.05em;
+}
+
+.poster-col {
+  width: 96px;
+}
+
+.poster-cell {
+  padding: 10px 6px;
+}
+
+.poster-thumb {
+  width: 70px;
+  height: 104px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.poster-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.poster-placeholder {
+  font-size: 11px;
+  color: #777;
+  text-align: center;
+  padding: 8px;
 }
 
 td .title {
