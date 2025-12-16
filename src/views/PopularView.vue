@@ -210,6 +210,14 @@ async function bootstrap() {
   }
 }
 
+watch(
+  tmdbKey,
+  (key, previous) => {
+    if (!key || key === previous) return
+    bootstrap()
+  }
+)
+
 function applyTableData(payload: { results: Movie[]; page: number; total_pages: number }) {
   tableMovies.value = payload.results
   tablePage.value = payload.page
@@ -316,14 +324,6 @@ watch(
   () => hasMore.value,
   (more) => {
     if (!more) destroyObserver()
-  }
-)
-
-watch(
-  tmdbKey,
-  (key, previous) => {
-    if (!key || key === previous) return
-    bootstrap()
   }
 )
 
