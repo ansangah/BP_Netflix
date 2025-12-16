@@ -57,7 +57,7 @@
     </div>
 
     <template v-else>
-      <div v-show="viewMode === 'table'" class="table-view">
+      <div v-if="viewMode === 'table'" ref="tableViewRef" class="table-view">
         <div class="grid-view">
           <article
             v-for="movie in gridMovies"
@@ -78,10 +78,6 @@
                 이미지 없음
               </div>
             </div>
-            <div class="grid-footer">
-              <p class="title">{{ movie.title }}</p>
-              <span class="rating">{{ movie.vote_average.toFixed(1) }}</span>
-            </div>
             <div class="grid-overlay">
               <div class="overlay-content">
                 <h3>{{ movie.title }}</h3>
@@ -97,7 +93,7 @@
         <div v-if="tableLoading" class="table-loading">페이지 로딩 중...</div>
       </div>
 
-      <div v-show="viewMode === 'infinite'" class="infinite-view">
+      <div v-else class="infinite-view">
         <div class="card-grid">
           <MovieCard
             v-for="movie in infiniteMovies"
@@ -146,8 +142,12 @@ const tablePage = ref(1)
 const tableTotalPages = ref(1)
 const tableLoading = ref(false)
 
-const cardsPerPage = 10
-const gridMovies = computed(() => tableMovies.value.slice(0, cardsPerPage))
+const tableColumns = ref(5)
+const tableRows = 2
+const minCardWidth = 140
+const gridMovies = computed(() =>
+  tableMovies.value.slice(0, Math.max(tableColumns.value * tableRows, tableRows))
+)
 
 // Infinite view state
 const infiniteMovies = ref<Movie[]>([])
@@ -156,6 +156,8 @@ const infiniteTotalPages = ref(1)
 const isLoadingMore = ref(false)
 const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
+const tableViewRef = ref<HTMLElement | null>(null)
+let resizeObserver: ResizeObserver | null = null
 
 const hasMore = computed(() => infinitePage.value <= infiniteTotalPages.value)
 const fallbackOverview =
@@ -172,9 +174,46 @@ const imageBaseUrl =
   'https://image.tmdb.org/t/p/w500'
 const { tmdbKey } = useAuth()
 
+function setBodyOverflow(value: string) {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = value
+}
+
+function disableBodyScroll() {
+  setBodyOverflow('hidden')
+}
+
+function enableBodyScroll() {
+  setBodyOverflow('')
+}
+
 function getPosterUrl(movie: Movie) {
   if (!imageBaseUrl) return ''
   return movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : ''
+}
+
+function updateColumnCount() {
+  if (!tableViewRef.value) return
+  const padding = 40
+  const gap = 8
+  const availableWidth = Math.max(tableViewRef.value.clientWidth - padding, minCardWidth)
+  const columns = Math.max(Math.floor((availableWidth + gap) / (minCardWidth + gap)), 1)
+  tableColumns.value = columns
+}
+
+function observeTableSize() {
+  if (typeof ResizeObserver === 'undefined' || resizeObserver || !tableViewRef.value) return
+  resizeObserver = new ResizeObserver(() => {
+    updateColumnCount()
+  })
+  resizeObserver.observe(tableViewRef.value)
+}
+
+function disconnectTableObserver() {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
 }
 
 async function bootstrap() {
@@ -287,10 +326,27 @@ watch(
   () => viewMode.value,
   async (mode) => {
     if (mode === 'infinite') {
+      enableBodyScroll()
       await nextTick()
       createObserver()
     } else {
+      disableBodyScroll()
       destroyObserver()
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => tableViewRef.value,
+  (el) => {
+    if (el) {
+      nextTick(() => {
+        updateColumnCount()
+        observeTableSize()
+      })
+    } else {
+      disconnectTableObserver()
     }
   }
 )
@@ -320,22 +376,26 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   destroyObserver()
+  enableBodyScroll()
+  disconnectTableObserver()
 })
 </script>
 
 <style scoped>
 .popular-page {
-  padding: 96px 32px 48px;
+  padding: 28px 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -381,8 +441,8 @@ h1 {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 4px;
 }
 
 .pagination.inline {
@@ -407,14 +467,23 @@ h1 {
 .table-view {
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.04);
-  padding: 24px;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  overflow: hidden;
 }
 
 .grid-view {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  height: 100%;
+  justify-items: stretch;
 }
 
 .grid-card {
@@ -424,7 +493,11 @@ h1 {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-height: 220px;
   transition: transform 0.3s ease;
 }
 
@@ -434,8 +507,10 @@ h1 {
 
 .grid-poster {
   width: 100%;
-  height: 170px;
+  aspect-ratio: 3 / 4;
   background: #111;
+  flex: 1;
+  min-height: 0;
 }
 
 .grid-poster img {
@@ -443,24 +518,6 @@ h1 {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.grid-footer {
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.grid-footer .title {
-  margin: 0;
-  font-size: 14px;
-}
-
-.grid-footer .rating {
-  font-size: 16px;
-  font-weight: 700;
 }
 
 .grid-overlay {
@@ -587,16 +644,17 @@ h1 {
 
 @media (max-width: 768px) {
   .popular-page {
-    padding: 96px 16px 48px;
+    padding: 64px 16px 32px;
   }
 
   .table-view {
     padding: 16px;
+    gap: 12px;
   }
 }
 .description {
   color: #aaa;
   max-width: 520px;
-  margin-top: 12px;
+  margin-top: 0;
 }
 </style>
