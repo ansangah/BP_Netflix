@@ -1,30 +1,49 @@
 <template>
   <section class="popular-page">
     <header class="page-header">
-      <div>
+      <div class="heading">
         <p class="eyebrow">Trending Now</p>
         <h1>대세 콘텐츠</h1>
         <p class="description">
           최근 TMDB에서 가장 핫한 작품들을 살펴보고, 테이블 또는 무한 스크롤 뷰로 탐색해 보세요.
         </p>
       </div>
-      <div class="view-switch">
-        <button
-          class="switch-btn"
-          :class="{ active: viewMode === 'table' }"
-          type="button"
-          @click="setView('table')"
-        >
-          Table View
-        </button>
-        <button
-          class="switch-btn"
-          :class="{ active: viewMode === 'infinite' }"
-          type="button"
-          @click="setView('infinite')"
-        >
-          Infinite Scroll
-        </button>
+      <div class="controls-row">
+        <div class="view-switch">
+          <button
+            class="switch-btn"
+            :class="{ active: viewMode === 'table' }"
+            type="button"
+            @click="setView('table')"
+          >
+            Table View
+          </button>
+          <button
+            class="switch-btn"
+            :class="{ active: viewMode === 'infinite' }"
+            type="button"
+            @click="setView('infinite')"
+          >
+            Infinite Scroll
+          </button>
+        </div>
+        <div v-if="viewMode === 'table'" class="pagination inline">
+          <button
+            type="button"
+            @click="changeTablePage(tablePage - 1)"
+            :disabled="tablePage <= 1 || tableLoading"
+          >
+            이전
+          </button>
+          <span>{{ tablePage }} / {{ tableTotalPages }}</span>
+          <button
+            type="button"
+            @click="changeTablePage(tablePage + 1)"
+            :disabled="tablePage >= tableTotalPages || tableLoading"
+          >
+            다음
+          </button>
+        </div>
       </div>
     </header>
 
@@ -38,87 +57,43 @@
     </div>
 
     <template v-else>
-      <div v-show="viewMode === 'table'" class="table-view">
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th class="poster-col">포스터</th>
-                <th>제목</th>
-                <th>장르</th>
-                <th class="rating-col">평점</th>
-                <th class="detail-col" aria-label="상세 보기 버튼"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="movie in tableMovies" :key="movie.id">
-                <tr>
-                  <td class="poster-cell">
-                    <div class="poster-thumb">
-                      <img
-                        v-if="getPosterUrl(movie)"
-                        :src="getPosterUrl(movie)"
-                        :alt="movie.title"
-                      />
-                      <div v-else class="poster-placeholder">
-                        이미지 없음
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="title">{{ movie.title }}</p>
-                  </td>
-                  <td>{{ formatGenres(movie.genre_ids) }}</td>
-                  <td class="rating-cell">
-                    {{ movie.vote_average.toFixed(1) }}
-                  </td>
-                  <td class="detail-btn-cell">
-                    <button
-                      class="detail-toggle"
-                      type="button"
-                      :aria-expanded="expandedMovieId === movie.id"
-                      :aria-label="`${movie.title} 상세 설명 ${expandedMovieId === movie.id ? '숨기기' : '보기'}`"
-                      @click="toggleDetails(movie.id)"
-                    >
-                      {{ expandedMovieId === movie.id ? '↓' : '→' }}
-                    </button>
-                  </td>
-                </tr>
-                <tr
-                  v-if="expandedMovieId === movie.id"
-                  :key="`${movie.id}-detail`"
-                  class="detail-row"
-                >
-                  <td colspan="5">
-                    <p class="detail-release">
-                      개봉일: {{ formatDate(movie.release_date) }}
-                    </p>
-                    <p class="detail-overview">
-                      {{ movie.overview || fallbackOverview }}
-                    </p>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+      <div v-if="viewMode === 'table'" ref="tableViewRef" class="table-view">
+        <div class="grid-view">
+          <article
+            v-for="movie in gridMovies"
+            :key="movie.id"
+            class="grid-card"
+            :class="{ 'is-expanded': expandedMovieId === movie.id }"
+            @click="toggleDetails(movie.id)"
+            @keyup.enter.space.prevent="toggleDetails(movie.id)"
+            tabindex="0"
+          >
+            <div class="grid-poster">
+              <img
+                v-if="getPosterUrl(movie)"
+                :src="getPosterUrl(movie)"
+                :alt="movie.title"
+              />
+              <div v-else class="poster-placeholder">
+                이미지 없음
+              </div>
+            </div>
+            <div class="grid-overlay">
+              <div class="overlay-content">
+                <h3>{{ movie.title }}</h3>
+                <p class="overlay-meta">
+                  ⭐ {{ movie.vote_average.toFixed(1) }} · {{ formatDate(movie.release_date) }}
+                </p>
+                <p class="overlay-genres">{{ formatGenres(movie.genre_ids) }}</p>
+                <p>{{ movie.overview || fallbackOverview }}</p>
+              </div>
+            </div>
+          </article>
         </div>
         <div v-if="tableLoading" class="table-loading">페이지 로딩 중...</div>
-        <div class="pagination">
-          <button type="button" @click="changeTablePage(tablePage - 1)" :disabled="tablePage <= 1 || tableLoading">
-            이전
-          </button>
-          <span>{{ tablePage }} / {{ tableTotalPages }}</span>
-          <button
-            type="button"
-            @click="changeTablePage(tablePage + 1)"
-            :disabled="tablePage >= tableTotalPages || tableLoading"
-          >
-            다음
-          </button>
-        </div>
       </div>
 
-      <div v-show="viewMode === 'infinite'" class="infinite-view">
+      <div v-else class="infinite-view">
         <div class="card-grid">
           <MovieCard
             v-for="movie in infiniteMovies"
@@ -167,6 +142,13 @@ const tablePage = ref(1)
 const tableTotalPages = ref(1)
 const tableLoading = ref(false)
 
+const tableColumns = ref(5)
+const tableRows = 2
+const minCardWidth = 180
+const gridMovies = computed(() =>
+  tableMovies.value.slice(0, Math.max(tableColumns.value * tableRows, tableRows))
+)
+
 // Infinite view state
 const infiniteMovies = ref<Movie[]>([])
 const infinitePage = ref(1)
@@ -174,6 +156,8 @@ const infiniteTotalPages = ref(1)
 const isLoadingMore = ref(false)
 const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
+const tableViewRef = ref<HTMLElement | null>(null)
+let resizeObserver: ResizeObserver | null = null
 
 const hasMore = computed(() => infinitePage.value <= infiniteTotalPages.value)
 const fallbackOverview =
@@ -185,12 +169,51 @@ function toggleDetails(movieId: number) {
   expandedMovieId.value = expandedMovieId.value === movieId ? null : movieId
 }
 
-const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const imageBaseUrl =
+  (import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string) ||
+  'https://image.tmdb.org/t/p/w500'
 const { tmdbKey } = useAuth()
+
+function setBodyOverflow(value: string) {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = value
+}
+
+function disableBodyScroll() {
+  setBodyOverflow('hidden')
+}
+
+function enableBodyScroll() {
+  setBodyOverflow('')
+}
 
 function getPosterUrl(movie: Movie) {
   if (!imageBaseUrl) return ''
   return movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : ''
+}
+
+function updateColumnCount() {
+  if (!tableViewRef.value) return
+  const padding = 40
+  const gap = 8
+  const availableWidth = Math.max(tableViewRef.value.clientWidth - padding, minCardWidth)
+  const columns = Math.max(Math.floor((availableWidth + gap) / (minCardWidth + gap)), 1)
+  tableColumns.value = columns
+}
+
+function observeTableSize() {
+  if (typeof ResizeObserver === 'undefined' || resizeObserver || !tableViewRef.value) return
+  resizeObserver = new ResizeObserver(() => {
+    updateColumnCount()
+  })
+  resizeObserver.observe(tableViewRef.value)
+}
+
+function disconnectTableObserver() {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
 }
 
 async function bootstrap() {
@@ -209,6 +232,14 @@ async function bootstrap() {
     initialError.value = error instanceof Error ? error.message : String(error)
   }
 }
+
+watch(
+  tmdbKey,
+  (key, previous) => {
+    if (!key || key === previous) return
+    bootstrap()
+  }
+)
 
 function applyTableData(payload: { results: Movie[]; page: number; total_pages: number }) {
   tableMovies.value = payload.results
@@ -295,10 +326,27 @@ watch(
   () => viewMode.value,
   async (mode) => {
     if (mode === 'infinite') {
+      enableBodyScroll()
       await nextTick()
       createObserver()
     } else {
+      disableBodyScroll()
       destroyObserver()
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => tableViewRef.value,
+  (el) => {
+    if (el) {
+      nextTick(() => {
+        updateColumnCount()
+        observeTableSize()
+      })
+    } else {
+      disconnectTableObserver()
     }
   }
 )
@@ -319,14 +367,6 @@ watch(
   }
 )
 
-watch(
-  tmdbKey,
-  (key, previous) => {
-    if (!key || key === previous) return
-    bootstrap()
-  }
-)
-
 onMounted(async () => {
   await bootstrap()
   if (viewMode.value === 'infinite') {
@@ -336,22 +376,26 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   destroyObserver()
+  enableBodyScroll()
+  disconnectTableObserver()
 })
 </script>
 
 <style scoped>
 .popular-page {
-  padding: 96px 32px 48px;
+  padding: 28px 24px 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -392,6 +436,26 @@ h1 {
   color: #fff;
 }
 
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.pagination.inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+}
+
+.pagination.inline span {
+  font-weight: 600;
+}
+
 .error-box,
 .loading-state {
   padding: 40px;
@@ -403,118 +467,107 @@ h1 {
 .table-view {
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.04);
-  padding: 24px;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
   overflow: hidden;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-th,
-td {
-  padding: 14px 12px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-th {
-  font-weight: 600;
-  color: #ccc;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-}
-
-.poster-col {
-  width: 96px;
-}
-
-.poster-cell {
-  padding: 10px 6px;
-  display: flex;
-  align-items: center;
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 10px;
-}
-
-.rating-col {
-  width: 80px;
-}
-
-.rating-cell {
-  font-weight: 600;
-  font-size: 16px;
-  text-align: right;
-}
-
-.detail-col {
-  width: 60px;
-}
-
-.detail-btn-cell {
-  text-align: center;
-}
-
-.detail-toggle {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(0, 0, 0, 0.35);
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.detail-toggle:hover,
-.detail-toggle:focus-visible {
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.detail-row td {
-  background: rgba(255, 255, 255, 0.02);
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.detail-release {
-  font-size: 13px;
-  color: #ccc;
-  margin: 0 0 6px;
-}
-
-.detail-overview {
-  margin: 0;
-  color: #bbb;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.poster-thumb {
-  width: 96px;
-  height: 140px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
+  height: 100%;
+  justify-items: stretch;
   justify-content: center;
 }
 
-.poster-thumb img {
+.grid-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-height: 260px;
+  transition: transform 0.3s ease;
+}
+
+.grid-card:hover {
+  transform: translateY(-4px);
+}
+
+.grid-poster {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #111;
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-poster img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95));
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.grid-card.is-expanded .grid-overlay,
+.grid-card:hover .grid-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overlay-content {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.overlay-content h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.overlay-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.overlay-genres {
+  font-size: 12px;
+  color: #bbb;
+}
+
+.grid-wrapper {
+  overflow: hidden;
 }
 
 .poster-placeholder {
@@ -536,6 +589,30 @@ th {
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+
+@media (max-width: 1200px) {
+  .grid-view {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .grid-view {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-view {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .grid-view {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 
 .pagination button {
@@ -571,21 +648,17 @@ th {
 
 @media (max-width: 768px) {
   .popular-page {
-    padding: 96px 16px 48px;
+    padding: 64px 16px 32px;
   }
 
   .table-view {
     padding: 16px;
-  }
-
-  th,
-  td {
-    padding: 12px 8px;
+    gap: 12px;
   }
 }
 .description {
   color: #aaa;
   max-width: 520px;
-  margin-top: 12px;
+  margin-top: 0;
 }
 </style>

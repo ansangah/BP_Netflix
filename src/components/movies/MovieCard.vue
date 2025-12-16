@@ -44,7 +44,9 @@ const props = defineProps<{
   movie: Movie
 }>()
 
-const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const imageBaseUrl =
+  (import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string) ||
+  'https://image.tmdb.org/t/p/w500'
 
 const posterUrl = computed(() =>
   props.movie.poster_path ? `${imageBaseUrl}${props.movie.poster_path}` : ''

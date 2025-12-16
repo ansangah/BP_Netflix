@@ -141,7 +141,9 @@ type SortOption = 'recent' | 'rating' | 'title' | 'release'
 type ToastType = 'success' | 'error'
 
 const { wishlist, stats, removeFromWishlist, clearWishlist } = useWishlist()
-const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const imageBaseUrl =
+  (import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string) ||
+  'https://image.tmdb.org/t/p/w500'
 
 const viewMode = ref<ViewMode>('grid')
 const filters = reactive({
