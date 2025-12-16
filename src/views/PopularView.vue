@@ -185,7 +185,9 @@ function toggleDetails(movieId: number) {
   expandedMovieId.value = expandedMovieId.value === movieId ? null : movieId
 }
 
-const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const imageBaseUrl =
+  (import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string) ||
+  'https://image.tmdb.org/t/p/w500'
 const { tmdbKey } = useAuth()
 
 function getPosterUrl(movie: Movie) {

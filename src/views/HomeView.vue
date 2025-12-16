@@ -114,7 +114,9 @@ const updateViewport = () => {
 const router = useRouter()
 const { toggleWishlist, isWishlisted } = useWishlist()
 const { tmdbKey } = useAuth()
-const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
+const imageBaseUrl =
+  (import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string) ||
+  'https://image.tmdb.org/t/p/w500'
 
 const featuredMovie = computed(() => nowPlaying.value[0] ?? popular.value[0] ?? null)
 
