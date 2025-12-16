@@ -97,6 +97,7 @@ import {
   type Genre,
   type Movie
 } from '../composables/useTmdb'
+import { useAuth } from '../composables/useAuth'
 
 const genres = ref<Genre[]>([])
 const movies = ref<Movie[]>([])
@@ -183,6 +184,17 @@ onMounted(async () => {
   await fetchGenres()
   fetchMovies()
 })
+
+const { tmdbKey } = useAuth()
+
+watch(
+  tmdbKey,
+  (key, previous) => {
+    if (!key || key === previous) return
+    fetchGenres()
+    fetchMovies()
+  }
+)
 </script>
 
 <style scoped>
