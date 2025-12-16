@@ -46,7 +46,8 @@
                 <th class="poster-col">포스터</th>
                 <th>제목</th>
                 <th>장르</th>
-                <th>평점</th>
+                <th class="rating-col">평점</th>
+                <th class="detail-col" aria-label="상세 보기 버튼"></th>
               </tr>
             </thead>
             <tbody>
@@ -63,6 +64,15 @@
                         이미지 없음
                       </div>
                     </div>
+                  </td>
+                  <td>
+                    <p class="title">{{ movie.title }}</p>
+                  </td>
+                  <td>{{ formatGenres(movie.genre_ids) }}</td>
+                  <td class="rating-cell">
+                    {{ movie.vote_average.toFixed(1) }}
+                  </td>
+                  <td class="detail-btn-cell">
                     <button
                       class="detail-toggle"
                       type="button"
@@ -70,21 +80,16 @@
                       :aria-label="`${movie.title} 상세 설명 ${expandedMovieId === movie.id ? '숨기기' : '보기'}`"
                       @click="toggleDetails(movie.id)"
                     >
-                      {{ expandedMovieId === movie.id ? '-' : '+' }}
+                      {{ expandedMovieId === movie.id ? '↓' : '→' }}
                     </button>
                   </td>
-                  <td>
-                    <p class="title">{{ movie.title }}</p>
-                  </td>
-                  <td>{{ formatGenres(movie.genre_ids) }}</td>
-                  <td>{{ movie.vote_average.toFixed(1) }}</td>
                 </tr>
                 <tr
                   v-if="expandedMovieId === movie.id"
                   :key="`${movie.id}-detail`"
                   class="detail-row"
                 >
-                  <td colspan="4">
+                  <td colspan="5">
                     <p class="detail-release">
                       개봉일: {{ formatDate(movie.release_date) }}
                     </p>
@@ -427,6 +432,24 @@ th {
   gap: 10px;
 }
 
+.rating-col {
+  width: 80px;
+}
+
+.rating-cell {
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+}
+
+.detail-col {
+  width: 60px;
+}
+
+.detail-btn-cell {
+  text-align: center;
+}
+
 .detail-toggle {
   width: 34px;
   height: 34px;
@@ -466,8 +489,8 @@ th {
 }
 
 .poster-thumb {
-  width: 70px;
-  height: 104px;
+  width: 96px;
+  height: 140px;
   border-radius: 12px;
   overflow: hidden;
   background: #0f0f0f;
