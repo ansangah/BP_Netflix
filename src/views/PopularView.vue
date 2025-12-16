@@ -144,7 +144,7 @@ const tableLoading = ref(false)
 
 const tableColumns = ref(5)
 const tableRows = 2
-const minCardWidth = 140
+const minCardWidth = 180
 const gridMovies = computed(() =>
   tableMovies.value.slice(0, Math.max(tableColumns.value * tableRows, tableRows))
 )
@@ -478,12 +478,13 @@ h1 {
 
 .grid-view {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
   grid-template-rows: repeat(2, minmax(0, 1fr));
   grid-auto-rows: 1fr;
-  gap: 8px;
+  gap: 10px;
   height: 100%;
   justify-items: stretch;
+  justify-content: center;
 }
 
 .grid-card {
@@ -497,7 +498,7 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  max-height: 220px;
+  max-height: 260px;
   transition: transform 0.3s ease;
 }
 
@@ -526,7 +527,7 @@ h1 {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.95));
   padding: 16px;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -543,6 +544,9 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .overlay-content h3 {
