@@ -1,24 +1,32 @@
 <!-- src/components/layout/AppHeader.vue -->
 <template>
   <header :class="['app-header', { 'is-scrolled': isScrolled }]">
-    <div class="logo" @click="router.push('/')">
-      <span class="logo-mark">WSD</span> Movie
-    </div>
+    <div class="logo" @click="router.push('/')">Movie</div>
 
-    <nav class="nav">
-      <RouterLink to="/">홈</RouterLink>
-      <RouterLink to="/popular">대세 콘텐츠</RouterLink>
-      <RouterLink to="/search">찾아보기</RouterLink>
-      <RouterLink to="/wishlist">내가 찜한 리스트</RouterLink>
+    <button
+      class="menu-toggle"
+      type="button"
+      :aria-expanded="isNavOpen"
+      :aria-label="isNavOpen ? '메뉴 닫기' : '메뉴 열기'"
+      @click="toggleNav"
+    >
+      <span class="menu-icon" :class="{ open: isNavOpen }" aria-hidden="true"></span>
+    </button>
+
+    <nav :class="['nav', { 'is-open': isNavOpen }]">
+      <RouterLink to="/" @click="closeNav">홈</RouterLink>
+      <RouterLink to="/popular" @click="closeNav">대세 콘텐츠</RouterLink>
+      <RouterLink to="/search" @click="closeNav">찾아보기</RouterLink>
+      <RouterLink to="/wishlist" @click="closeNav">내가 찜한 리스트</RouterLink>
+
+      <div class="user-area">
+        <template v-if="isLoggedIn">
+          <span class="user-id">{{ currentUser?.id }}</span>
+          <button class="ghost-btn" @click="handleLogout">로그아웃</button>
+        </template>
+        <RouterLink v-else class="ghost-btn" to="/signin" @click="closeNav">로그인</RouterLink>
+      </div>
     </nav>
-
-    <div class="user-area">
-      <template v-if="isLoggedIn">
-        <span class="user-id">{{ currentUser?.id }}</span>
-        <button class="ghost-btn" @click="handleLogout">로그아웃</button>
-      </template>
-      <RouterLink v-else class="ghost-btn" to="/signin">로그인</RouterLink>
-    </div>
   </header>
 </template>
 
@@ -30,14 +38,24 @@ import { useAuth } from '../../composables/useAuth'
 const router = useRouter()
 const { currentUser, isLoggedIn, logout } = useAuth()
 const isScrolled = ref(false)
+const isNavOpen = ref(false)
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 40
 }
 
 function handleLogout() {
+  closeNav()
   logout()
   router.push('/signin')
+}
+
+function toggleNav() {
+  isNavOpen.value = !isNavOpen.value
+}
+
+function closeNav() {
+  isNavOpen.value = false
 }
 
 onMounted(() => {
@@ -82,16 +100,38 @@ onBeforeUnmount(() => {
   letter-spacing: 0.5px;
 }
 
-.logo-mark {
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #e50914;
-  font-size: 14px;
+.menu-toggle {
+  display: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.menu-toggle .menu-icon {
+  font-size: 24px;
+  color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.menu-icon::before {
+  content: '☰';
+  display: inline-block;
+}
+
+.menu-icon.open::before {
+  content: '✕';
+  transform: rotate(0deg);
 }
 
 .nav {
   display: flex;
   gap: 18px;
+  align-items: center;
 }
 
 .nav a {
@@ -150,8 +190,36 @@ onBeforeUnmount(() => {
     height: 64px;
   }
 
+  .menu-toggle {
+    display: flex;
+  }
+
   .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 16px;
+    gap: 12px;
     display: none;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .nav.is-open {
+    display: flex;
+  }
+
+  .nav a {
+    width: 100%;
+  }
+
+  .user-area {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>
