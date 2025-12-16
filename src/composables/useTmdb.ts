@@ -24,8 +24,10 @@ interface TmdbListResponse {
   total_results: number
 }
 
+const defaultBaseUrl = (import.meta.env.VITE_TMDB_BASE_URL as string) || 'https://api.themoviedb.org/3'
+
 const tmdb = axios.create({
-  baseURL: import.meta.env.VITE_TMDB_BASE_URL as string
+  baseURL: defaultBaseUrl
 })
 
 const storedTmdbKeyName = 'TMDb-Key'
