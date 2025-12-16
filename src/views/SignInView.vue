@@ -28,7 +28,7 @@
             </label>
 
             <label>
-              <span>비밀번호</span>
+              <span>비밀번호(TMDB API key)</span>
               <div class="input-frame">
                 <span class="icon">🔒</span>
                 <input v-model="form.signinPassword" type="password" placeholder="영문+숫자 6자 이상" />
@@ -65,7 +65,7 @@
             </label>
 
             <label>
-              <span>비밀번호</span>
+              <span>비밀번호(TMDB API key)</span>
               <div class="input-frame">
                 <span class="icon">🔒</span>
                 <input v-model="form.signupPassword" type="password" placeholder="최소 6자" />
