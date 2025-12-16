@@ -4,6 +4,7 @@ const USERS_KEY = 'wsd-users'
 const AUTH_USER_KEY = 'wsd-auth-user'
 const REMEMBER_EMAIL_KEY = 'wsd-remember-email'
 const TMDB_KEY_STORAGE = 'TMDb-Key'
+const TMDB_KEY_PATTERN = /^[A-Za-z0-9]{32}$/
 
 export interface StoredUser {
   id: string
@@ -84,8 +85,8 @@ export function useAuth() {
       return { ok: false, message: '유효한 이메일 주소를 입력해주세요.' }
     }
 
-    if (password.length < 6) {
-      return { ok: false, message: '비밀번호는 6자 이상 입력해주세요.' }
+    if (!TMDB_KEY_PATTERN.test(password)) {
+      return { ok: false, message: '비밀번호에는 TMDB API 키(32자리 영숫자)를 입력해야 합니다.' }
     }
 
     const exists = users.value.some((user) => user.id === email)
