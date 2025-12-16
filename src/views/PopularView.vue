@@ -45,33 +45,55 @@
               <tr>
                 <th class="poster-col">포스터</th>
                 <th>제목</th>
-                <th>개봉일</th>
-                <th>평점</th>
                 <th>장르</th>
+                <th>평점</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="movie in tableMovies" :key="movie.id">
-                <td class="poster-cell">
-                  <div class="poster-thumb">
-                    <img
-                      v-if="getPosterUrl(movie)"
-                      :src="getPosterUrl(movie)"
-                      :alt="movie.title"
-                    />
-                    <div v-else class="poster-placeholder">
-                      이미지 없음
+              <template v-for="movie in tableMovies" :key="movie.id">
+                <tr>
+                  <td class="poster-cell">
+                    <div class="poster-thumb">
+                      <img
+                        v-if="getPosterUrl(movie)"
+                        :src="getPosterUrl(movie)"
+                        :alt="movie.title"
+                      />
+                      <div v-else class="poster-placeholder">
+                        이미지 없음
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td>
-                  <p class="title">{{ movie.title }}</p>
-                  <p class="overview">{{ truncate(movie.overview) }}</p>
-                </td>
-                <td>{{ formatDate(movie.release_date) }}</td>
-                <td>{{ movie.vote_average.toFixed(1) }}</td>
-                <td>{{ formatGenres(movie.genre_ids) }}</td>
-              </tr>
+                    <button
+                      class="detail-toggle"
+                      type="button"
+                      :aria-expanded="expandedMovieId === movie.id"
+                      :aria-label="`${movie.title} 상세 설명 ${expandedMovieId === movie.id ? '숨기기' : '보기'}`"
+                      @click="toggleDetails(movie.id)"
+                    >
+                      {{ expandedMovieId === movie.id ? '-' : '+' }}
+                    </button>
+                  </td>
+                  <td>
+                    <p class="title">{{ movie.title }}</p>
+                  </td>
+                  <td>{{ formatGenres(movie.genre_ids) }}</td>
+                  <td>{{ movie.vote_average.toFixed(1) }}</td>
+                </tr>
+                <tr
+                  v-if="expandedMovieId === movie.id"
+                  :key="`${movie.id}-detail`"
+                  class="detail-row"
+                >
+                  <td colspan="4">
+                    <p class="detail-release">
+                      개봉일: {{ formatDate(movie.release_date) }}
+                    </p>
+                    <p class="detail-overview">
+                      {{ movie.overview || fallbackOverview }}
+                    </p>
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -148,6 +170,14 @@ const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 const hasMore = computed(() => infinitePage.value <= infiniteTotalPages.value)
+const fallbackOverview =
+  "실직한 가장 '벤 리처즈'가 거액의 상금을 위해 30일간 잔인한 추격자들로부터 살아남아야 하는 글로벌 서바이벌 프로그램에 참가하며 펼쳐지는 추격..."
+
+const expandedMovieId = ref<number | null>(null)
+
+function toggleDetails(movieId: number) {
+  expandedMovieId.value = expandedMovieId.value === movieId ? null : movieId
+}
 
 const imageBaseUrl = import.meta.env.VITE_TMDB_IMAGE_BASE_URL as string
 
@@ -240,11 +270,6 @@ function setView(mode: ViewMode) {
   viewMode.value = mode
 }
 
-function truncate(text: string, length = 80) {
-  if (!text) return '줄거리 정보가 없습니다.'
-  return text.length > length ? `${text.slice(0, length)}...` : text
-}
-
 function formatGenres(ids?: number[]) {
   if (!ids?.length) return '장르 정보 없음'
   return ids.map((id) => genresMap.value[id]).filter(Boolean).join(', ') || '장르 정보 없음'
@@ -328,12 +353,6 @@ h1 {
   font-size: clamp(32px, 5vw, 48px);
 }
 
-.description {
-  color: #aaa;
-  max-width: 520px;
-  margin-top: 12px;
-}
-
 .view-switch {
   display: flex;
   background: rgba(255, 255, 255, 0.05);
@@ -403,6 +422,47 @@ th {
 
 .poster-cell {
   padding: 10px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.detail-toggle:hover,
+.detail-toggle:focus-visible {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.detail-row td {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-release {
+  font-size: 13px;
+  color: #ccc;
+  margin: 0 0 6px;
+}
+
+.detail-overview {
+  margin: 0;
+  color: #bbb;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .poster-thumb {
@@ -429,17 +489,6 @@ th {
   color: #777;
   text-align: center;
   padding: 8px;
-}
-
-td .title {
-  margin: 0;
-  font-weight: 600;
-}
-
-td .overview {
-  margin: 4px 0 0;
-  color: #888;
-  font-size: 12px;
 }
 
 .table-loading {
@@ -500,5 +549,10 @@ td .overview {
   td {
     padding: 12px 8px;
   }
+}
+.description {
+  color: #aaa;
+  max-width: 520px;
+  margin-top: 12px;
 }
 </style>
