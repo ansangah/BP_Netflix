@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior() {
     return { top: 0 }
@@ -31,8 +31,7 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !loggedIn) {
     return next({
-      name: 'signin',
-      query: { redirect: to.fullPath }
+      name: 'signin'
     })
   }
 

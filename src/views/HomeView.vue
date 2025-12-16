@@ -321,11 +321,34 @@ function formatDate(date: string) {
 }
 
 .stats {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  grid-auto-flow: column;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
   gap: 18px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+}
+
+.stats::-webkit-scrollbar {
+  height: 6px;
+}
+
+.stats::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.stats::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stats {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .stat-card {
