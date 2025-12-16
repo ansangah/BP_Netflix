@@ -585,7 +585,6 @@ h1 {
   height: 1px;
 }
 
-#responsive
 @media (max-width: 768px) {
   .popular-page {
     padding: 96px 16px 48px;
@@ -593,11 +592,6 @@ h1 {
 
   .table-view {
     padding: 16px;
-  }
-
-  th,
-  td {
-    padding: 12px 8px;
   }
 }
 .description {
