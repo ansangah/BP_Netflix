@@ -387,8 +387,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .page-header {
