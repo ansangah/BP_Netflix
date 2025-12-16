@@ -321,11 +321,26 @@ function formatDate(date: string) {
 }
 
 .stats {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(180px, 1fr));
-  gap: 18px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 16px;
+  overflow: hidden;
+}
+
+@media (max-width: 960px) {
+  .stats {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    font-size: 0.85rem;
+  }
 }
 
 .stat-card {
